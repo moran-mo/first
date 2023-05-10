@@ -16,4 +16,16 @@ class UsersController extends Controller
         // compact 创建一个叫user的
         return view('users.show',compact('user'));
     }
+
+    // 注册
+    public function store(Request $request){
+//        unique:users 唯一性验证 ,这里是针对users数据表进行验证  email 格式验证
+//        confirmed 密码匹配验证 判断两次输入的密码是否相同
+        $request->validate([
+            'name'     => 'required|unique:users|max:50',
+            'email'    => 'required|email|unique:users|max:255',
+            'password' => 'required|confirmed|min:6|max:16'
+        ]);
+    }
+
 }
