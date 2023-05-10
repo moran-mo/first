@@ -17,7 +17,8 @@ class SessionsController extends Controller
            'email'    => 'required|email|max:255',
            'password' => 'required'
         ]);
-        if (Auth::attempt($credentials)){
+        //  attempt()第一个参数为需要进行用户身份认证的数组，第二个参数为是否为用户开启『记住我』功能的布尔值
+        if (Auth::attempt($credentials,$request->has('remember'))){
             // 登录成功后的相关操作
             session()->flash('success','欢迎回来');
             return redirect()->route('users.show',[Auth::user()]);
