@@ -40,4 +40,29 @@ class UsersController extends Controller
 
     }
 
+    public function edit(User $user){
+        return view('users.edit',compact('user'));
+    }
+
+    public function update(User $user,Request $request){
+//        nullable，这意味着当用户提供空白密码时也会通过验证
+        $this->validate($request,[
+           'name'      => 'required|max:50',
+            'password' => 'nullable|confirmed|min:6'
+        ]);
+
+        $data = [];
+        $data['name'] = $request->name;
+
+        // 存在password的时候进行更改，没有就不进行更改
+        if ($request->password){
+            $data['password'] = bcrypt($request->password);
+        }
+        $user->update($data);
+
+        session()->flash('success','个人资料更新成功');
+
+        return redirect()->route('users.show',$user);
+    }
+
 }
