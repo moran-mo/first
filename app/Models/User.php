@@ -41,4 +41,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function gravatar($size = '100'){
+        $hash = md5(strtolower(trim($this->attributes['email'])));
+        return "https://img1.baidu.com/it/u=413643897,2296924942&fm=253&fmt=auto&app=138&f=JPEG/avatar/$hash?s=$size";
+    }
+
 }
