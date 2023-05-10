@@ -8,7 +8,19 @@ use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
-    //
+    //except:为黑名单机制，除了show页面不经过中间件Auth过滤，其他都需要过滤，如果没有通过验证，则跳转到指定的页面
+    //only:为白名单机制，除了edit页面需要经过中间件Auth过滤，其他都不需要过滤，如果没有通过验证，则跳转到指定的页面
+    public function __construct()
+    {
+        $this->middleware('auth',[
+            'except' => 'show','create','store'
+        ]);
+        //  只让未登录用户访问注册页面：
+        $this->middleware('guest',[
+            'only' => ['create']
+        ]);
+    }
+
     public function create(){
         return view('users.create');
     }
@@ -41,10 +53,18 @@ class UsersController extends Controller
     }
 
     public function edit(User $user){
+        //  authorize 方法接收两个参数，第一个为授权策略的名称，第二个为进行授权验证的数据
+        //  这里的update是指授权类里面的update 也就是Policies\UserPolicy.php这个类
+        $this->authorize('update',$user);
+
         return view('users.edit',compact('user'));
     }
 
     public function update(User $user,Request $request){
+        //  authorize 方法接收两个参数，第一个为授权策略的名称，第二个为进行授权验证的数据
+        //  这里的update是指授权类里面的update 也就是Policies\UserPolicy.php这个类
+        $this->authorize('update',$user);
+
 //        nullable，这意味着当用户提供空白密码时也会通过验证
         $this->validate($request,[
            'name'      => 'required|max:50',
