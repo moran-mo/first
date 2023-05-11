@@ -92,4 +92,12 @@ class UsersController extends Controller
         return redirect()->route('users.show',$user);
     }
 
+    public function destroy(User $user){
+        // 在用户控制器中使用 authorize 方法来对删除操作进行授权验证即可
+        $this->authorize('destroy',$user);
+        $user->delete();
+        session()->flash('success','删除成功');
+        return back();
+    }
+
 }
